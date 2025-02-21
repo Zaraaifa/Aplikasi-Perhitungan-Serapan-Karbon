@@ -16,7 +16,7 @@ persamaan_alometrik = {
 jenis_pohon_list = list(persamaan_alometrik.keys())
 bulan_list = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
-if "data_dummy" not in st.session_state:
+if "data_dummy" not in st.session_state or st.session_state.data_dummy.empty:
     st.session_state.data_dummy = pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
 
 for bulan in bulan_list:
@@ -98,9 +98,12 @@ elif menu == "Tampilkan Data yang Tersimpan":
 
 # Fungsi untuk menampilkan tren karbon dalam satu tahun
 elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
-    # Menghitung rata-rata karbon per bulan
-    karbon_tahunan = data_dummy.groupby("Bulan")["Karbon"].mean().reset_index()
-
+    if "data_dummy" in st.session_state and not st.session_state.data_dummy.empty:
+        karbon_tahunan = st.session_state.data_dummy.groupby("Bulan")["Karbon"].mean().reset_index()
+    else:
+        st.error("⚠️ Data belum tersedia! Pastikan data telah dibuat sebelum melihat tren karbon.")
+        st.stop()
+        
     # mapping bulan ke angka agar urutannya sesuai
     bulan_mapping = {bulan: i+1 for i, bulan in enumerate(bulan_list)}
 
