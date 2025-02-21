@@ -160,7 +160,7 @@ elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
     st.write(f"🔍 Rata-rata karbon dalam setahun: {rata_rata_karbon:.2f} kg")
 
 
-    # 1️⃣ Perbandingan Bulan Awal & Akhir
+    # 1. Perbandingan Bulan Awal & Akhir
     if karbon_akhir > karbon_awal:
         st.success("✅ Tren karbon meningkat sepanjang tahun.")
     elif karbon_akhir < karbon_awal:
@@ -168,7 +168,7 @@ elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
     else:
         st.info("➖ Tren karbon stabil sepanjang tahun.")
 
-    # 2️⃣ Pola Kenaikan & Penurunan
+    # 2. Pola Kenaikan & Penurunan
     perubahan = np.diff(karbon_tahunan["Karbon"])  # Selisih antar bulan
     jumlah_naik = np.sum(perubahan > 0)  # Berapa kali karbon naik?
     jumlah_turun = np.sum(perubahan < 0)  # Berapa kali karbon turun?
@@ -180,7 +180,7 @@ elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
     else:
         st.info("⚖️ Karbon mengalami fluktuasi yang seimbang sepanjang tahun.")
 
-    # 4️⃣ Kesimpulan Akhir
+    # 3. Kesimpulan Akhir
     if karbon_akhir > karbon_awal and jumlah_naik > jumlah_turun:
         st.success("🔥 Kesimpulan: Karbon mengalami tren meningkat dengan kenaikan signifikan sepanjang tahun.")
     elif karbon_akhir < karbon_awal and jumlah_turun > jumlah_naik:
