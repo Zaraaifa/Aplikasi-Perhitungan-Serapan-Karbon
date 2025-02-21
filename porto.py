@@ -203,8 +203,8 @@ elif menu == "Membuat Laporan":
         pdf.set_font("Arial", "", 12)
         pdf.ln(10)
         pdf.cell(0, 10, f"Total Data Pohon: {len(st.session_state.data_dummy)}", ln=True)
-        pdf.cell(0, 10, f"Rata-rata Karbon (kg): {data_dummy['Karbon'].mean():.2f}", ln=True)
-        pdf.cell(0, 10, f"Total Karbon yang Diserap (kg): {data_dummy['Karbon'].sum():.2f}", ln=True)
+        pdf.cell(0, 10, f"Rata-rata Karbon (kg): {st.session_state.data_dummy['Karbon'].mean():.2f}", ln=True)
+        pdf.cell(0, 10, f"Total Karbon yang Diserap (kg): {st.session_state.data_dummy['Karbon'].sum():.2f}", ln=True)
 
         # Menambahkan Rata-rata Karbon per Jenis Pohon
         pdf.ln(10)
