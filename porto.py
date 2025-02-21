@@ -211,7 +211,7 @@ elif menu == "Membuat Laporan":
         pdf.set_font("Arial", "B", 12)
         pdf.cell(0, 10, "Rata-rata Karbon per Jenis Pohon:", ln=True)
 
-        rata_rata_karbon_per_pohon = data_dummy.groupby("Jenis Pohon")["Karbon"].mean()
+        rata_rata_karbon_per_pohon = st.session_state.data_dummy.groupby("Jenis Pohon")["Karbon"].mean()
 
         pdf.set_font("Arial", "", 12)
         for jenis, rata2 in rata_rata_karbon_per_pohon.items():
@@ -243,12 +243,12 @@ elif menu == "Membuat Laporan":
 
         # Tambahkan Data ke Tabel
         pdf.set_font("Arial", "", 10)
-        for i in range(len(data_dummy)):
-            pdf.cell(30, 10, str(data_dummy.iloc[i]["Bulan"]), border=1)
-            pdf.cell(40, 10, str(data_dummy.iloc[i]["Jenis Pohon"]), border=1)
-            pdf.cell(30, 10, f"{data_dummy.iloc[i]['DBH']:.2f}", border=1)
-            pdf.cell(30, 10, f"{data_dummy.iloc[i]['Karbon']:.2f}", border=1)
-            pdf.cell(40, 10, f"{data_dummy.iloc[i]['Serapan CO2']:.2f}", border=1)
+        for i in range(len(st.session_state.data_dummy)):
+            pdf.cell(30, 10, str(st.session_state.data_dummy.iloc[i]["Bulan"]), border=1)
+            pdf.cell(40, 10, str(st.session_state.data_dummy.iloc[i]["Jenis Pohon"]), border=1)
+            pdf.cell(30, 10, f"{st.session_state.data_dummy.iloc[i]['DBH']:.2f}", border=1)
+            pdf.cell(30, 10, f"{st.session_state.data_dummy.iloc[i]['Karbon']:.2f}", border=1)
+            pdf.cell(40, 10, f"{st.session_state.data_dummy.iloc[i]['Serapan CO2']:.2f}", border=1)
             pdf.ln()
 
         # Simpan sebagai PDF
