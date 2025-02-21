@@ -93,7 +93,7 @@ if menu == "Hitung Serapan Karbon":
 # Fungsi untuk menampilkan data karbon dummy
 elif menu == "Tampilkan Data yang Tersimpan":
     st.write("📊Data Perhitungan Karbon yang Tersimpan")
-    st.write(data_dummy)  # Menampilkan tabel tanpa indeks
+    st.write(st.session_state.data_dummy)  # Menampilkan tabel tanpa indeks
 
 # Fungsi untuk menampilkan tren karbon dalam satu tahun
 elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
