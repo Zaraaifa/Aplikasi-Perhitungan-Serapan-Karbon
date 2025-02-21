@@ -16,7 +16,8 @@ persamaan_alometrik = {
 jenis_pohon_list = list(persamaan_alometrik.keys())
 bulan_list = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
-data_dummy = pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
+if "data_dummy" not in st.session_state:
+    st.session_state.data_dummy = pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
 
 for bulan in bulan_list:
     for _ in range(5):  # 5 pohon per bulan
@@ -86,7 +87,7 @@ if menu == "Hitung Serapan Karbon":
             "Serapan CO2": [co2t]
     })
 
-        data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)  # Append ke tabel
+        st.session_state.data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)  # Append ke tabel
         st.success("✅ Data berhasil ditambahkan!")
 
 
