@@ -46,7 +46,7 @@ menu = st.selectbox("Pilih Menu", ["Hitung Serapan Karbon",
 # Fungsi menghitung biomassa, karbon, dan CO2
 if menu == "Hitung Serapan Karbon":
     jenis_pohon = st.selectbox("Pilih Jenis Pohon", jenis_pohon_list)
-    dbh = st.number_input("Masukkan DBH (cm)", min_value=0.0)
+    dbh = st.number_input("Masukkan DBH (cm)", min_value=1.0)
     
     # Menampilkan bulan sekarang sebelum tombol ditekan
     bulan_sekarang = bulan_list[(datetime.datetime.now().month - 1) % 12]
@@ -70,12 +70,9 @@ if menu == "Hitung Serapan Karbon":
         st.write(f"Jenis Pohon: {jenis_pohon}")
         st.write(f"DBH: {dbh} cm")
 
-        if biomassa is not None:
-            st.write(f"Total Biomassa: {biomassa:.2f} kg")
-        if karbon is not None:
-            st.write(f"Total Karbon: {karbon:.2f} kg")
-        if co2t is not None:
-            st.write(f"Serapan CO2: {co2t:.2f} kg")
+        st.write(f"Total Biomassa: {biomassa:.2f} kg")
+        st.write(f"Total Karbon: {karbon:.2f} kg")
+        st.write(f"Serapan CO2: {co2t:.2f} kg")
 
         # append data ke dataframe
         new_data = pd.DataFrame({
@@ -87,7 +84,7 @@ if menu == "Hitung Serapan Karbon":
             "Serapan CO2": [co2t]
     })
 
-        st.session_state.data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)  # Append ke tabel
+        st.session_state.data_dummy = pd.concat([st.session_state.data_dummy, new_data], ignore_index=True)  # Append ke tabel
         st.success("✅ Data berhasil ditambahkan!")
 
 
@@ -188,7 +185,7 @@ elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
 
 # Fungsi untuk menyimpan hasil ke CSV
 elif menu == "Simpan Hasil Perhitungan ke CSV":
-    data_dummy.to_csv("hasil_karbon.csv", index=False)
+    st.session_state.data_dummy.to_csv("hasil_karbon.csv", index=False)
     st.success("✅ Data berhasil disimpan ke hasil_karbon.csv!")
     with open("hasil_karbon.csv", "rb") as file:
         st.download_button("Unduh CSV", file, file_name="hasil_karbon.csv", mime="text/csv")
@@ -205,7 +202,7 @@ elif menu == "Membuat Laporan":
         # Ringkasan Data
         pdf.set_font("Arial", "", 12)
         pdf.ln(10)
-        pdf.cell(0, 10, f"Total Data Pohon: {len(data_dummy)}", ln=True)
+        pdf.cell(0, 10, f"Total Data Pohon: {len(st.session_state.data_dummy)}", ln=True)
         pdf.cell(0, 10, f"Rata-rata Karbon (kg): {data_dummy['Karbon'].mean():.2f}", ln=True)
         pdf.cell(0, 10, f"Total Karbon yang Diserap (kg): {data_dummy['Karbon'].sum():.2f}", ln=True)
 
