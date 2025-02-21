@@ -31,7 +31,7 @@ for bulan in bulan_list:
         
         new_data = pd.DataFrame([[bulan, jenis_pohon, dbh, biomassa, karbon, co2t]], 
                                 columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
-        st.session_state.data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)
+        st.session_state.data_dummy = pd.concat([st.session_state.data_dummy, new_data], ignore_index=True)
 
 # streamlite interface
 st.title("🌳 Perhitungan Karbon pada Pohon")
