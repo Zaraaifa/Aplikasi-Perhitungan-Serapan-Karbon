@@ -177,9 +177,6 @@ elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
     else:
         st.info("⚖️ Karbon mengalami fluktuasi yang seimbang sepanjang tahun.")
 
-    # 3️⃣ Rata-rata Karbon
-    st.write(f"🔍 Rata-rata karbon dalam setahun: {rata_rata_karbon:.2f} kg")
-
     # 4️⃣ Kesimpulan Akhir
     if karbon_akhir > karbon_awal and jumlah_naik > jumlah_turun:
         st.success("🔥 Kesimpulan: Karbon mengalami tren meningkat dengan kenaikan signifikan sepanjang tahun.")
