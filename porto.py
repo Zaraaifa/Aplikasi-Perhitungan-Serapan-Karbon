@@ -16,22 +16,28 @@ persamaan_alometrik = {
 jenis_pohon_list = list(persamaan_alometrik.keys())
 bulan_list = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
-if "data_dummy" not in st.session_state or st.session_state.data_dummy.empty:
-    st.session_state.data_dummy = pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
-
-for bulan in bulan_list:
-    for _ in range(5):  # 5 pohon per bulan
-        jenis_pohon = np.random.choice(jenis_pohon_list)  # Pilih pohon secara acak
-        dbh = np.random.uniform(20, 50)  # DBH antara 20-50 cm
-        a, b = persamaan_alometrik[jenis_pohon]["a"], persamaan_alometrik[jenis_pohon]["b"]
-        
-        biomassa = a * (dbh ** b)
-        karbon = biomassa * 0.48
-        co2t = karbon * 3.67
-        
-        new_data = pd.DataFrame([[bulan, jenis_pohon, dbh, biomassa, karbon, co2t]], 
-                                columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
-        st.session_state.data_dummy = pd.concat([st.session_state.data_dummy, new_data], ignore_index=True)
+# Inisialisasi data dummy hanya jika belum ada atau jumlah data kurang dari 60
+if "data_dummy" not in st.session_state or len(st.session_state.data_dummy) < 60:
+    data_dummy = pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
+    
+    for bulan in bulan_list:
+        for _ in range(5):  # 5 pohon per bulan
+            if len(data_dummy) >= 60:
+                break  # Hentikan jika sudah mencapai 60 data
+            
+            jenis_pohon = np.random.choice(jenis_pohon_list)  # Pilih pohon secara acak
+            dbh = np.random.uniform(20, 50)  # DBH antara 20-50 cm
+            a, b = persamaan_alometrik[jenis_pohon]["a"], persamaan_alometrik[jenis_pohon]["b"]
+            
+            biomassa = a * (dbh ** b)
+            karbon = biomassa * 0.48
+            co2t = karbon * 3.67
+            
+            new_data = pd.DataFrame([[bulan, jenis_pohon, dbh, biomassa, karbon, co2t]], 
+                                    columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
+            data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)
+    
+    st.session_state.data_dummy = data_dummy
 
 # streamlite interface
 st.title("🌳 Perhitungan Karbon pada Pohon")
@@ -82,7 +88,7 @@ if menu == "Hitung Serapan Karbon":
             "Biomassa" : [biomassa],
             "Karbon": [karbon],
             "Serapan CO2": [co2t]
-    })
+        })
 
         st.session_state.data_dummy = pd.concat([st.session_state.data_dummy, new_data], ignore_index=True)  # Append ke tabel
         st.success("✅ Data berhasil ditambahkan!")
@@ -259,4 +265,3 @@ elif menu == "Membuat Laporan":
             st.download_button("Unduh Laporan PDF", pdf_file, file_name="Laporan_Karbon.pdf", mime="application/pdf")
     except Exception as e:
         st.error(f"❌ Terjadi kesalahan: {e}")
-
