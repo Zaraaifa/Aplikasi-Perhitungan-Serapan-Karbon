@@ -3,10 +3,10 @@ Carbon Sequestration Calculator adalah aplikasi berbasis Streamlit yang digunaka
 
 
 🛠️ Fitur Utama
-✅ Perhitungan Biomassa & Karbon – Menghitung biomassa pohon, kandungan karbon, dan CO₂ yang terserap.
-✅ Visualisasi Data – Menampilkan tren sequestrasi karbon dengan grafik interaktif.
-✅ Ekspor Data – Simpan hasil perhitungan dalam format CSV dan PDF.
-✅ Antarmuka Interaktif – Dibangun dengan Streamlit, mudah digunakan langsung dari browser.
+1. Perhitungan Biomassa & Karbon – Menghitung biomassa pohon, kandungan karbon, dan CO₂ yang terserap.
+2. Visualisasi Data – Menampilkan tren sequestrasi karbon dengan grafik interaktif.
+3. Ekspor Data – Simpan hasil perhitungan dalam format CSV dan PDF.
+4. Antarmuka Interaktif – Dibangun dengan Streamlit, mudah digunakan langsung dari browser.
 
 📦 Instalasi & Penggunaan
 1. Clone Repository
