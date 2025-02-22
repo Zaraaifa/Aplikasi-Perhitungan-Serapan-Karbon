@@ -278,8 +278,10 @@ elif menu == "Generate Dashboard Data Karbon PDF":
         pdf.cell(200, 10, "Laporan Perhitungan Karbon", ln=True, align="C")
 
         # Ringkasan Data
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Arial", "B", 12)
         pdf.ln(10)
+        pdf.cell(0, 10, "Ringkasan Data:", ln=True)
+        pdf.set_font("Arial", "", 12)
         pdf.cell(0, 10, f"Total Data Pohon: {len(st.session_state.data_dummy)}", ln=True)
         pdf.cell(0, 10, f"Rata-rata Karbon (kg): {st.session_state.data_dummy['Karbon'].mean():.2f}", ln=True)
         pdf.cell(0, 10, f"Total Karbon yang Diserap (kg): {st.session_state.data_dummy['Karbon'].sum():.2f}", ln=True)
@@ -311,6 +313,7 @@ elif menu == "Generate Dashboard Data Karbon PDF":
 
         # Tambahkan Header Tabel
         pdf.ln(10)
+        pdf.cell(0, 10, "Tabel Data Serapan Karbon", ln=True, align="C")
         pdf.set_font("Arial", "B", 10)
         pdf.cell(20, 10, "Bulan", border=1)
         pdf.cell(60, 10, "Jenis Pohon", border=1)
