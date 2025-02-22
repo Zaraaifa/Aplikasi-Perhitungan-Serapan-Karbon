@@ -274,14 +274,14 @@ elif menu == "Generate Dashboard Data Karbon PDF":
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.add_page()
-        pdf.set_font("Arial", "B", 16)
+        pdf.set_font("Arial", "B", 14)
         pdf.cell(200, 10, "Laporan Perhitungan Karbon", ln=True, align="C")
 
         # Ringkasan Data
         pdf.set_font("Arial", "B", 12)
         pdf.ln(10)
         pdf.cell(0, 10, "Ringkasan Data:", ln=True)
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Arial", "", 10)
         pdf.cell(0, 10, f"Total Data Pohon: {len(st.session_state.data_dummy)}", ln=True)
         pdf.cell(0, 10, f"Rata-rata Karbon (kg): {st.session_state.data_dummy['Karbon'].mean():.2f}", ln=True)
         pdf.cell(0, 10, f"Total Karbon yang Diserap (kg): {st.session_state.data_dummy['Karbon'].sum():.2f}", ln=True)
@@ -293,7 +293,7 @@ elif menu == "Generate Dashboard Data Karbon PDF":
 
         rata_rata_karbon_per_pohon = st.session_state.data_dummy.groupby("Jenis Pohon")["Karbon"].mean()
 
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Arial", "", 10)
         for jenis, rata2 in rata_rata_karbon_per_pohon.items():
             pdf.cell(0, 10, f"- {jenis}: {rata2:.2f} kg", ln=True)
 
