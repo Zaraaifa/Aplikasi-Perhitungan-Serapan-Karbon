@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import datetime
-from fpdf import FPDF
 import streamlit as st
 import io
 import re
 import os
+from fpdf import FPDF
 
 # Data Alometrik untuk Jenis Pohon
 persamaan_alometrik = {
