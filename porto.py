@@ -312,11 +312,12 @@ elif menu == "Generate Dashboard Data Karbon PDF":
         # Tambahkan Header Tabel
         pdf.ln(10)
         pdf.set_font("Arial", "B", 10)
-        pdf.cell(30, 10, "Bulan", border=1)
-        pdf.cell(40, 10, "Jenis Pohon", border=1)
-        pdf.cell(30, 10, "DBH (cm)", border=1)
+        pdf.cell(20, 10, "Bulan", border=1)
+        pdf.cell(60, 10, "Jenis Pohon", border=1)
+        pdf.cell(20, 10, "DBH (cm)", border=1)
+        pdf.cell(30, 10, "Biomassa (kg)", border=1)
         pdf.cell(30, 10, "Karbon (kg)", border=1)
-        pdf.cell(40, 10, "Serapan CO2 (kg)", border=1)
+        pdf.cell(30, 10, "Serapan CO2 (kg)", border=1)
         pdf.ln()
 
         # Tambahkan Data ke Tabel
