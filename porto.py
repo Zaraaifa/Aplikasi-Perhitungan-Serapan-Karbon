@@ -279,7 +279,7 @@ elif menu == "Generate Dashboard Data Karbon PDF":
 
         # Ringkasan Data
         pdf.set_font("Arial", "B", 12)
-        pdf.ln(10)
+        pdf.ln(6)
         pdf.cell(0, 10, "Ringkasan Data:", ln=True)
         pdf.set_font("Arial", "", 10)
         pdf.cell(0, 10, f"Total Data Pohon: {len(st.session_state.data_dummy)}", ln=True)
@@ -287,7 +287,7 @@ elif menu == "Generate Dashboard Data Karbon PDF":
         pdf.cell(0, 10, f"Total Karbon yang Diserap (kg): {st.session_state.data_dummy['Karbon'].sum():.2f}", ln=True)
 
         # Menambahkan Rata-rata Karbon per Jenis Pohon
-        pdf.ln(10)
+        pdf.ln(6)
         pdf.set_font("Arial", "B", 12)
         pdf.cell(0, 10, "Rata-rata Karbon per Jenis Pohon:", ln=True)
 
@@ -303,16 +303,16 @@ elif menu == "Generate Dashboard Data Karbon PDF":
                 f.write(st.session_state.tren_karbon_img)
             
             # sisipkan grafik ke PDF
-            pdf.ln(10)
+            pdf.ln(6)
             pdf.set_font("Arial", "B", 12)
             pdf.cell(0, 10, "Grafik Tren Karbon dalam 1 Tahun:", ln=True)
-            pdf.image("tren_karbon.png", x=10, y=None, w=190)  # Sisipkan grafik
+            pdf.image("tren_karbon.png", x=10, y=None, w=180)  # Sisipkan grafik
         
         else:
             st.error("❌ Grafik tren karbon tidak ditemukan. Kunjungi menu tren karbon terlebih dahulu untuk generate karbon")
 
         # Tambahkan Header Tabel
-        pdf.ln(10)
+        pdf.ln(6)
         pdf.cell(0, 10, "Tabel Data Serapan Karbon", ln=True, align="C")
         pdf.set_font("Arial", "B", 10)
         pdf.cell(20, 10, "Bulan", border=1)
