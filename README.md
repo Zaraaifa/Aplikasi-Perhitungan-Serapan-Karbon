@@ -1,14 +1,14 @@
 # Aplikasi-Kalkulator-Serapan-Karbon
-Carbon Sequestration Calculator adalah aplikasi berbasis Streamlit yang digunakan untuk menghitung serapan karbon dari pohon berdasarkan data biomassa. Aplikasi ini membantu dalam analisis tren dan menghasilkan laporan dalam format PDF dan CSV.
+Kalkulator Serapan Karbon adalah aplikasi berbasis Streamlit yang digunakan untuk menghitung serapan karbon dari pohon berdasarkan data biomassa. Aplikasi ini membantu dalam analisis tren dan menghasilkan laporan dalam format PDF dan CSV.
 
 
-🛠️ Fitur Utama
+## 🛠️ Fitur Utama
 1. Perhitungan Biomassa & Karbon – Menghitung biomassa pohon, kandungan karbon, dan CO₂ yang terserap.
 2. Visualisasi Data – Menampilkan tren sequestrasi karbon dengan grafik interaktif.
 3. Ekspor Data – Simpan hasil perhitungan dalam format CSV dan PDF.
 4. Antarmuka Interaktif – Dibangun dengan Streamlit, mudah digunakan langsung dari browser.
 
-📦 Instalasi & Penggunaan
+## 📦 Instalasi & Penggunaan
 1. Clone Repository
 git clone https://github.com/Zaraaifa/Aplikasi-Perhitungan-Serapan-Karbon
 cd Aplikasi-Perhitungan-Serapan-Karbon
@@ -18,13 +18,7 @@ pip install -r requirements.txt
 3. Jalankan Program
 streamlit run porto.py
 
-🏗️ Struktur Folder
-Aplikasi-Perhitungan-Serapan-Karbon/
-│── porto.py              # Program utama
-│── README.md             # Dokumentasi
-│── requirements.txt      # Dokumentasi
-
-⚡ Teknologi yang Digunakan
+## ⚡ Teknologi yang Digunakan
 Python (pandas, numpy, matplotlib)
 Streamlit (untuk antarmuka interaktif)
 Fpdf (untuk pembuatan laporan PDF)
