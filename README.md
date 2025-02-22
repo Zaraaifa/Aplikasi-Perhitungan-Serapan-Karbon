@@ -9,13 +9,15 @@ Kalkulator Serapan Karbon adalah aplikasi berbasis Streamlit yang digunakan untu
 4. Antarmuka Interaktif – Dibangun dengan Streamlit, mudah digunakan langsung dari browser.
 
 ## 📦 Instalasi & Penggunaan
-1. Clone Repository
+### Clone Repository
 git clone https://github.com/Zaraaifa/Aplikasi-Perhitungan-Serapan-Karbon
 cd Aplikasi-Perhitungan-Serapan-Karbon
-2. Install Dependencies
+
+### Install Dependencies
 Pastikan Python sudah terinstall, lalu jalankan:
 pip install -r requirements.txt
-3. Jalankan Program
+
+### Jalankan Program
 streamlit run porto.py
 
 ## ⚡ Teknologi yang Digunakan
