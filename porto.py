@@ -5,68 +5,116 @@ import datetime
 from fpdf import FPDF
 import streamlit as st
 import io
+import re
+import os
 
 # Data Alometrik untuk Jenis Pohon
 persamaan_alometrik = {
-    "Jati": {"a": 0.055, "b": 2.579},
-    "Mahoni": {"a": 0.048, "b": 2.68},
-    "Sengon": {"a": 0.148, "b": 2.299}
+    "Akasia (Acacia spp.)": {"a": 0.072 , "b": 2.54},
+    "Beringin (Ficus benghalensis)": {"a": 0.123 , "b": 2.35},
+    "Jati (Tectona grandis)": {"a": 0.055, "b": 2.579},
+    "Mahoni (Swietenia mahagoni)": {"a": 0.048, "b": 2.68},
+    "Pinus (Pinus spp.)": {"a": 0.052, "b": 2.64},
+    "Sengon (Falcataria moluccana)": {"a": 0.148, "b": 2.299},
+    "Trembesi (Albizia saman)": {"a": 0.167, "b": 2.371}
 }
 
 jenis_pohon_list = list(persamaan_alometrik.keys())
 bulan_list = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
 # Inisialisasi data dummy hanya jika belum ada atau jumlah data kurang dari 60
-if "data_dummy" not in st.session_state or len(st.session_state.data_dummy) < 60:
+if "data_dummy" not in st.session_state:
+    np.random.seed(42) # agar hasil random data dummy tetap sama
+
+    #inisiasi DBH awal setiap pohon
+    dbh_awal = {jenis: np.random.uniform(10, 26, size=3) for jenis in jenis_pohon_list}  # 3 pohon per jenis
     data_dummy = pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
     
     for bulan in bulan_list:
-        for _ in range(5):  # 5 pohon per bulan
-            if len(data_dummy) >= 60:
-                break  # Hentikan jika sudah mencapai 60 data
+        for jenis_pohon in jenis_pohon_list:
+            for i in range(3):  # 5 pohon per bulan
+                pertumbuhan = np.random.uniform(0,1)
+                dbh_awal[jenis_pohon][i] += pertumbuhan 
+                dbh = dbh_awal[jenis_pohon][i]
+                a, b = persamaan_alometrik[jenis_pohon]["a"], persamaan_alometrik[jenis_pohon]["b"]
             
-            jenis_pohon = np.random.choice(jenis_pohon_list)  # Pilih pohon secara acak
-            dbh = np.random.uniform(20, 50)  # DBH antara 20-50 cm
-            a, b = persamaan_alometrik[jenis_pohon]["a"], persamaan_alometrik[jenis_pohon]["b"]
+                biomassa = a * (dbh ** b)
+                karbon = biomassa * 0.48
+                co2t = karbon * 3.67
             
-            biomassa = a * (dbh ** b)
-            karbon = biomassa * 0.48
-            co2t = karbon * 3.67
-            
-            new_data = pd.DataFrame([[bulan, jenis_pohon, dbh, biomassa, karbon, co2t]], 
+                new_data = pd.DataFrame([[bulan, jenis_pohon, dbh, biomassa, karbon, co2t]], 
                                     columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
-            data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)
+                data_dummy = pd.concat([data_dummy, new_data], ignore_index=True)
     
     st.session_state.data_dummy = data_dummy
 
+# Fungsi untuk menyimpan data ke file CSV
+def simpan_data_ke_csv():
+    st.session_state.data_dummy.to_csv("data_karbon.csv", index=False)
+
+# Fungsi untuk memuat data dari file CSV
+def muat_data_dari_csv():
+    if os.path.exists("data_karbon.csv"):
+        return pd.read_csv("data_karbon.csv")
+    else:
+        return pd.DataFrame(columns=["Bulan", "Jenis Pohon", "DBH", "Biomassa", "Karbon", "Serapan CO2"])
+
+# Inisialisasi data dummy dari file CSV (jika ada)
+if "data_dummy" not in st.session_state:
+    st.session_state.data_dummy = muat_data_dari_csv()
+
+def validasi_nama_pohon(nama):
+    """
+    Validasi nama pohon:
+    - Tidak boleh kosong.
+    - Hanya boleh mengandung huruf dan spasi.
+    """
+    if not nama.strip():  # Cek apakah input kosong atau hanya spasi
+        return False
+    # Cek apakah input hanya mengandung huruf dan spasi
+    if not re.match(r"^[A-Za-z\s]+$", nama):
+        return False
+    return True
+
+
 # streamlite interface
-st.title("🌳 Perhitungan Karbon pada Pohon")
+st.title("🌳 Kalkulator Serapan Karbon")
 
 # menu utama streamlit
 menu = st.selectbox("Pilih Menu", ["Hitung Serapan Karbon", 
                                    "Tren Perbandingan Karbon dalam Satu Tahun",
                                    "Tampilkan Data yang Tersimpan",
                                    "Simpan Hasil Perhitungan ke CSV", 
-                                   "Membuat Laporan"])
+                                   "Generate Dashboard Data Karbon PDF"])
 
 # Fungsi menghitung biomassa, karbon, dan CO2
 if menu == "Hitung Serapan Karbon":
-    jenis_pohon = st.selectbox("Pilih Jenis Pohon", jenis_pohon_list)
-    dbh = st.number_input("Masukkan DBH (cm)", min_value=1.0)
+    jenis_pohon = st.selectbox("Pilih Jenis Pohon", jenis_pohon_list + ["Pohon Bercabang Lainnya"])
     
-    # Menampilkan bulan sekarang sebelum tombol ditekan
-    bulan_sekarang = bulan_list[(datetime.datetime.now().month - 1) % 12]
-    st.write(f"Bulan Sekarang: {bulan_sekarang}")  # Menampilkan bulan saat ini
+    if jenis_pohon == "Pohon Bercabang Lainnya":
+        nama_pohon = st.text_input("Masukkan Nama Pohon").strip()
+        if nama_pohon:
+            if not validasi_nama_pohon(nama_pohon):
+                st.error("❌ Nama pohon tidak valid. Hanya boleh mengandung huruf dan spasi.")
+            else:
+                jenis_pohon = nama_pohon.title()
+        else:
+            st.error("❌ Nama pohon tidak boleh kosong.")
 
-    biomassa = karbon = co2t = None #inisiasi variabel perhitungan sebelum tombol "hitung karbon ditekan"
+    dbh = st.number_input("Masukkan DBH (cm)", min_value=1.0)
+
+    # Input bulan dari pengguna
+    bulan_sekarang = st.selectbox("Pilih Bulan", bulan_list)  # Pengguna memilih bulan
+    
+    biomassa = karbon = co2t = None  # Inisiasi variabel perhitungan sebelum tombol "hitung karbon" ditekan
 
     if st.button("Hitung Karbon"):
-        st.session_state.bulan_sekarang = bulan_list[(datetime.datetime.now().month - 1) % 12]
-
-        bulan_sekarang = st.session_state.bulan_sekarang
-
-        a = persamaan_alometrik[jenis_pohon]["a"]
-        b = persamaan_alometrik[jenis_pohon]["b"]
+        if jenis_pohon in persamaan_alometrik:
+            a = persamaan_alometrik[jenis_pohon]["a"]
+            b = persamaan_alometrik[jenis_pohon]["b"]
+        else: 
+            a = 0.11
+            b = 2.62
                     
         biomassa = a * (dbh ** b)
         karbon = biomassa * 0.48  # Asumsi %C = 48%
@@ -77,27 +125,51 @@ if menu == "Hitung Serapan Karbon":
         st.write(f"DBH: {dbh} cm")
 
         st.write(f"Total Biomassa: {biomassa:.2f} kg")
-        st.write(f"Total Karbon: {karbon:.2f} kg")
+        st.write(f"Total Serapan Karbon: {karbon:.2f} kg")
         st.write(f"Serapan CO2: {co2t:.2f} kg")
 
-        # append data ke dataframe
-        new_data = pd.DataFrame({
-            "Bulan": [bulan_sekarang],
-            "Jenis Pohon": [jenis_pohon],
-            "DBH" : [dbh],
-            "Biomassa" : [biomassa],
-            "Karbon": [karbon],
-            "Serapan CO2": [co2t]
-        })
+        # Tanya pengguna apakah ingin menyimpan data menggunakan checkbox
+        st.session_state.temp_data = {
+            "Bulan": bulan_sekarang,
+            "Jenis Pohon": jenis_pohon,
+            "DBH": dbh,
+            "Biomassa": biomassa,
+            "Karbon": karbon,
+            "Serapan CO2": co2t
+        }
 
-        st.session_state.data_dummy = pd.concat([st.session_state.data_dummy, new_data], ignore_index=True)  # Append ke tabel
-        st.success("✅ Data berhasil ditambahkan!")
+    # Tampilkan opsi untuk menyimpan data
+    if "temp_data" in st.session_state:
+        save_data = st.selectbox("Apakah Anda ingin menyimpan data ini?", ["Ya", "Tidak"])
 
+        if save_data == "Ya":
+            # Append data sementara ke dataframe
+            new_data = pd.DataFrame([st.session_state.temp_data])
+            st.session_state.data_dummy = pd.concat([st.session_state.data_dummy, new_data], ignore_index=True)
+            st.success("✅ Data berhasil ditambahkan!")
+            del st.session_state.temp_data  # Hapus data sementara setelah disimpan
+            simpan_data_ke_csv()
+        elif save_data == "Tidak":
+            st.info("ℹ️ Data tidak disimpan dan akan hilang saat halaman dimuat ulang (refresh).")
+            del st.session_state.temp_data  # Hapus data sementara jika tidak disimpan
 
 # Fungsi untuk menampilkan data karbon dummy
 elif menu == "Tampilkan Data yang Tersimpan":
-    st.write("📊Data Perhitungan Karbon yang Tersimpan")
+    st.write("📊 Data Perhitungan Karbon yang Tersimpan")
     st.write(st.session_state.data_dummy)  # Menampilkan tabel tanpa indeks
+
+    # fitur filter berdasarkan jenis pohon
+    jenis_pohon_filter = st.selectbox("Filter Berdasarkan Jenis Pohon", ["Semua"] + jenis_pohon_list + ["Pohon Bercabang Lainnya"])
+    
+    if jenis_pohon_filter == "Semua":
+        st.write(st.session_state.data_dummy)  # Tampilkan semua data
+    elif jenis_pohon_filter == "Pohon Bercabang Lainnya":
+        # Tampilkan data dengan jenis pohon yang tidak ada di jenis_pohon_list
+        filtered_data = st.session_state.data_dummy[~st.session_state.data_dummy["Jenis Pohon"].isin(jenis_pohon_list)]
+        st.write(filtered_data)
+    else:
+        filtered_data = st.session_state.data_dummy[st.session_state.data_dummy["Jenis Pohon"] == jenis_pohon_filter]
+        st.write(filtered_data)
 
 # Fungsi untuk menampilkan tren karbon dalam satu tahun
 elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
@@ -191,13 +263,13 @@ elif menu == "Tren Perbandingan Karbon dalam Satu Tahun":
 
 # Fungsi untuk menyimpan hasil ke CSV
 elif menu == "Simpan Hasil Perhitungan ke CSV":
-    st.session_state.data_dummy.to_csv("hasil_karbon.csv", index=False)
-    st.success("✅ Data berhasil disimpan ke hasil_karbon.csv!")
+    st.session_state.data_dummy.to_csv("data_karbon.csv", index=False)
+    st.success("✅ Data berhasil disimpan ke data_karbon.csv!")
     with open("hasil_karbon.csv", "rb") as file:
-        st.download_button("Unduh CSV", file, file_name="hasil_karbon.csv", mime="text/csv")
+        st.download_button("Unduh CSV", file, file_name="data_karbon.csv", mime="text/csv")
 
 
-elif menu == "Membuat Laporan":
+elif menu == "Generate Dashboard Data Karbon PDF":
     try:
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
@@ -235,7 +307,7 @@ elif menu == "Membuat Laporan":
             pdf.image("tren_karbon.png", x=10, y=None, w=190)  # Sisipkan grafik
         
         else:
-            st.error("❌ Grafik tren karbon tidak ditemukan.")
+            st.error("❌ Grafik tren karbon tidak ditemukan. Kunjungi menu tren karbon terlebih dahulu untuk generate karbon")
 
         # Tambahkan Header Tabel
         pdf.ln(10)
