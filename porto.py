@@ -11,7 +11,7 @@ import os
 # Data Alometrik untuk Jenis Pohon
 persamaan_alometrik = {
     "Akasia (Acacia spp.)": {"a": 0.072 , "b": 2.54},
-    "Beringin (Ficus benghalensis)": {"a": 0.123 , "b": 2.35},
+    "Beringin (Ficus benjamina)": {"a": 0.123 , "b": 2.35},
     "Jati (Tectona grandis)": {"a": 0.055, "b": 2.579},
     "Mahoni (Swietenia mahagoni)": {"a": 0.048, "b": 2.68},
     "Pinus (Pinus spp.)": {"a": 0.052, "b": 2.64},
